@@ -1,0 +1,261 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>KArAt</title>
+<link href="./static/style.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons/css/academicons.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+<!-- <link rel="stylesheet" href="./static/fontawesome.all.min.css"> -->
+<script type="text/javascript" src="./static/jquery.mlens-1.0.min.js"></script> 
+<script type="text/javascript" src="./static/jquery.js"></script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+</script>
+<style>
+  table, th, td {
+  /* border: 3px solid black; */
+  border: none;
+  border-collapse: collapse;
+  text-align: center;
+  .textredtab {
+    color: red;
+  }
+  .textbluetab {
+    color: blue;
+  }
+}
+caption {
+  /* font-size: 1.2em;
+  font-weight: bold; */
+  margin-bottom: 10px;
+}
+figcaption {
+  /* font-size: 1.2em;
+  font-weight: bold; */
+  margin-top: 10px;
+}
+/* tr:nth-child(4){background-color: #eee;}
+tr:nth-child(5){background-color: #eee;}
+tr:nth-child(6){background-color: #eee;} */
+td:nth-child(1){text-align: left;}
+
+</style>
+</head>
+
+<body>
+<div class="content">
+  <h1><strong>Kolmogorov-Arnold Attention: Is Learnable Attention Better for Vision Transformers?</strong></h1>
+  <p id="authors"><a href="https://subhajitmaity.me/">Subhajit Maity</a><sup>1</sup> &nbsp;&nbsp;&nbsp;&nbsp; <a href="https://github.com/KillianHitsman/">Killian Hitsman</a><sup>2</sup> &nbsp;&nbsp;&nbsp;&nbsp; <a href="https://sciences.ucf.edu/math/person/xin-li/">Xin Li</a><sup>2</sup> &nbsp;&nbsp;&nbsp;&nbsp; <a href="https://sciences.ucf.edu/math/person/aritra-dutta/">Aritra Dutta</a><sup>2, 1</sup><br>
+    <br>
+  <span style="font-size: 24px"><sup>1</sup>Department of Computer Science, University of Central Florida
+  </span><br>
+  <span style="font-size: 24px"><sup>2</sup>Department of Mathematics, University of Central Florida
+  </span></p>
+  <br>
+  <img src="./static/images/KArAt_Arch_teaser.svg" class="teaser-gif" style="width:50%;"><br>
+  <h3 style="text-align:center"><em>A one-stop shop for any Kolmogorov-Arnold Activation for learning Transformer Attentions...</em></h3>
+    <font size="+2">
+          <p style="text-align: center;">
+            <a href="https://arxiv.org/pdf/" target="_blank">[<span><font size="+1"><i class="fas fa-file-pdf"></i></font></span>Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="https://arxiv.org/abs/" target="_blank">[<span><font size="+1"><i class="ai ai-arxiv"></i></font></span>arXiv]</a> &nbsp;&nbsp;&nbsp;&nbsp;
+	    (<font color="#C70039">coming soon!</font>) <a href="https://github.com/MaitySubhajit/KArAt" target="_blank">[<span><font size="+1"><i class="fab fa-github"></i></font></span>Code]</a>
+            <!-- &nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="static/bibtex.txt" target="_blank">[BibTeX]</a> -->
+          </p>
+    </font>
+</div>
+<div class="content">
+  <h2 style="text-align:center;">Abstract</h2>
+  <p>Kolmogorov-Arnold networks (KANs) are a remarkable innovation consisting of learnable activation functions with the potential to capture more complex relationships from data. Although KANs are useful in finding symbolic representations and continual learning of one-dimensional functions, their effectiveness in diverse machine learning (ML) tasks, such as vision, remains questionable. Presently, KANs are deployed by replacing multilayer perceptrons (MLPs) in deep network architectures, including advanced architectures such as vision Transformers (ViTs). In this paper, we are the first to design a general learnable <b>K</b>olmogorov-<b>Ar</b>nold <b>At</b>tention (KArAT) for vanilla ViTs that can operate on any choice of basis. However, the computing and memory costs of training them motivated us to propose a more modular version, and we designed particular learnable attention, called Fourier-KArAT. Fourier-KArAT and its variants either outperform their ViT counterparts or show comparable performance on CIFAR-10, CIFAR-100, and ImageNet-1K datasets. We dissect these architectures' performance and generalization capacity by analyzing their loss landscapes, weight distributions, optimizer path, attention visualization, and spectral behavior, and contrast them with vanilla ViTs. The goal of this paper is not to produce parameter- and compute-efficient attention, but to encourage the community to explore KANs in conjunction with more advanced architectures that require a careful understanding of learnable activations.</p>
+</div>
+<div class="content">
+  <h2>Background</h2>
+  <p>In search for an answer, we realized that while DeiT+KAN and ViT+KAN replace the MLP layer with KAN in the Transformer's encoder block, KAT implements a sophisticated group-KAN strategy that reuses a learnable function among a group of units in the same layer and chooses different bases for different encoder blocks. This strategy helps improve the accuracy by keeping almost similar parameter counts. Therefore, simply replacing MLPs with KANs might not guarantee better generalizability, but a properly designed KAN could. This perspective on the KANs' performance in conjunction with Transformers opens many research questions. Importantly, we also note that the community remains put from designing a learnable multihead attention module, the heart of the Transformers. Therefore, in the rise of second-generation Transformers, such as Google's TITAN and SAKANA AI's Transformer<sup>2</sup> that mimic the human brain, we want to ask: <em>Is it worth deploying learnable multi-head self-attention to the (vision) Transformers?</em></p>
+  <br>
+  <!-- <img class="summary-img" src="./static/background.png" style="width:100%;"> <br> -->
+</div>
+<div class="content">
+  <h2>Design</h2>
+  <p>Let \(\mathcal{A}^{i,j}\in \mathbb{R}^{N\times N}\) be the attention matrix for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. For \(k\in[N]\), the softmax activation function, \(\sigma:\mathbb{R}^N\to (0,1)^N\), operates on the \(k^{\rm th}\) row vector, \(\mathcal{A}^{i,j}_{k,:}\in\mathbb{R}^{1\times N}\) of \(\mathcal{A}^{i,j}\) to produce component-wise output 
+    \(
+    \sigma(\mathcal{A}^{i,j}_{k,l})=\tfrac{e^{\mathcal{A}^{i,j}_{k,l}}}{\sum\limits_{n=1}^N e^{\mathcal{A}^{i,j}_{k,n}}}.
+    \)
+  <br>
+  Instead of using the softmax function,  we can use a learnable activation function, \({\tilde{\sigma}}\) on the row vectors of each attention head \(\mathcal{A}^{i,j}\). With any choice of the basis functions (e.g., B-Spline, Fourier, Fractals, Wavelets, etc.), the activated attention row vector, \({\tilde{\sigma}(\mathcal{A}^{i,j}_{k,:})}\) for \(k\in [N]\) can be written as \(\tilde{\sigma}\left[(\mathcal{A}^{i,j}_{k,:})\right) = \left(\Phi^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right)^\top\)
+  </p>
+  <!-- <br> -->
+  <figure>
+  <img class="summary-img" src="./static/images/KArAt_Arch.svg" style="width:100%;">
+  <figcaption><em>(a)</em> The standard softmax self-attention for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. <em>(b)</em> The Kolmogorov-Arnold Attention (KArAt) replaces the softmax with a learnable function \(\Phi^{i,j}\). <em>(c)</em> The ideal KArAt is with an operator matrix, \(\Phi^{i,j}\) with \(N \times N\) learnable units that act on each row of \(\mathcal{A}^{i,j}\). <em>(d)</em> While \(\Phi^{i,j}\in\mathbb{R}^{N\times N}\) is impossible to implement due to computational constraints, our architecture uses an operator \(\widehat{\Phi}^{i,j}\) with \(N \times r\) learnable units \(r\ll N\), followed by a linear projector with learnable weights \(W\in \mathbb{R}^{r \times N}\).</figcaption>
+  </figure>
+  <!-- <p><em>(a)</em> The standard softmax self-attention for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. <em>(b)</em> The Kolmogorov-Arnold Attention (KArAt) replaces the softmax with a learnable function \(\Phi^{i,j}\). <em>(c)</em> The ideal KArAt is with an operator matrix, \(\Phi^{i,j}\) with \(N \times N\) learnable units that act on each row of \(\mathcal{A}^{i,j}\). <em>(d)</em> While \(\Phi^{i,j}\in\mathbb{R}^{N\times N}\) is impossible to implement due to computational constraints, our architecture uses an operator \(\widehat{\Phi}^{i,j}\) with \(N \times r\) learnable units \(r\ll N\), followed by a linear projector with learnable weights \(W\in \mathbb{R}^{r \times N}\).</p> -->
+  <!-- <br> -->
+  <p>Instead of using an \(N\times N\) operator, \({\Phi^{i,j}}\), we use a reduced sized operator \({\widehat{\Phi}^{i,j}\in\mathbb{R}^{r\times N}}\) such that \({r\ll N}\), and the new learned activation is $r$-dimensional for \(k\in[N]\). That is, \({\widehat{\Phi}^{i,j}}\) down-projects each attention row vector of \(\mathcal{A}^{i,j}\) to a lower dimensional subspace. This process significantly reduces the computational overhead. Next, we post-multiply using another learnable weight matrix, \(W^{i,j}\in\mathbb{R}^{N\times r}\) to project them back to their original dimension. For each \(k\in[N]\), this operation results in computing \({\widehat{\sigma}(\mathcal{A}^{i,j}_{k,:}) =\left[W^{i,j}\widehat{\Phi}^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right]^{\top}}\)</p>
+  <figure>
+  <img class="summary-img" src="./static/images/KArAt_uniblock.svg" style="width:50%;">
+  <figcaption><em>(a)</em> Blockwise attention mode where \(\Phi^{i,1}\neq\Phi^{i,2}\neq\cdots\neq\Phi^{i,L}\) for all \(i=1,2,...,h\) <em>(b)</em> universal attention mode, \(\Phi^{i,1}=\Phi^{i,2}=\cdots=\Phi^{i,L}=\Phi^{i}\) for all \(i=1,2,...,h\).</figcaption>
+  </figure>
+  <p>We consider two configurations for updating the operator \(\widehat{\Phi}^{i,j}\).  <em>(a)</em> <b>Blockwise:</b> In this configuration, each encoder block involves learning the attention through \(h\) distinct operators \(\widehat{\Phi}\) for each of the \(h\) heads, totaling \(hL\) operators. Like the MHSA architecture in ViTs, the blockwise configuration is designed to learn as many different data representations as possible. <em>(b)</em> <b>Universal:</b> The motivation behind this configuration comes from the KAT. In KAT, the MLP head is replaced with different variations of a KAN head &mdash; and Group-KAN. In Group-KAN, the KAN layer shares rational base functions and their coefficients among the edges.
+    Inspired by this, in our update configuration, all \(L\) encoder blocks share the same \(h\) operators; \(\widehat{\Phi}^{i,j} = \widehat{\Phi}^{i}\) for  \(j=1,2,\ldots, L\). Rather than learning attention through \(hL\) operators, this configuration only uses \(h\) operators. Here, we share all learnable units and their parameters in each head across \(L\) blocks. We postulate that blockwise mode with more operators captures more nuances from the data. In contrast, the universal mode is suitable for learning simpler decision boundaries from the data.</p>
+</div>
+<div class="content">
+  <h2>Empirical Findings</h2>
+  <table border="3px solid black" border-collapse="collapse" style="width:100%">
+    <caption>
+        Detailed performance of the best-performing Fourier KArAt models compared to the conventional vanilla baselines. 
+        The best and the second best Top-1 accuracies are given in <span style="color:red;">red</span> and 
+        <span style="color:blue;">blue</span>, respectively. The ↓ and ↑ arrows indicate the relative loss and gain, respectively, to the base models.<br>
+    </caption>
+    <thead>
+        <tr style="border-top: 2px solid black">
+            <th rowspan="2">Model</th>
+            <th colspan="2" style="border-bottom: 1px solid black">CIFAR-10</th>
+            <th colspan="2" style="border-bottom: 1px solid black">CIFAR-100</th>
+            <th colspan="2" style="border-bottom: 1px solid black">Imagenet-1K</th>
+            <th rowspan="2">Parameters</th>
+        </tr>
+        <tr style="border-bottom: 2px solid black">
+            <!-- <th></th> -->
+            <th>Acc.@1</th>
+            <th>Acc.@5</th>
+            <th>Acc.@1</th>
+            <th>Acc.@5</th>
+            <th>Acc.@1</th>
+            <th>Acc.@5</th>
+            <!-- <th></th> -->
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>ViT-Base</td>
+            <td><span class="textredtab">83.45</span></td>
+            <td>99.19</td>
+            <td><span class="textredtab">58.07</span></td>
+            <td>83.70</td>
+            <td><span class="textredtab">72.90</span></td>
+            <td>90.56</td>
+            <td>85.81M</td>
+        </tr>
+        <tr>
+            <td>+ G₁B</td>
+            <td><span class="textbluetab">81.81</span> (1.97% ↓)</td>
+            <td>99.01</td>
+            <td>55.92 (3.70% ↓)</td>
+            <td>82.04</td>
+            <td>68.03 (6.68% ↓)</td>
+            <td>86.41</td>
+            <td>87.51M (1.98% ↑)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid black">
+            <td>+ G₁U</td>
+            <td>80.75 (3.24% ↓)</td>
+            <td>98.76</td>
+            <td><span class="textbluetab">57.36</span> (1.22% ↓)</td>
+            <td>82.89</td>
+            <td><span class="textbluetab">68.83</span> (5.58% ↓)</td>
+            <td>87.69</td>
+            <td>85.95M (0.16% ↑)</td>
+        </tr>
+        <tr>
+            <td>ViT-Small</td>
+            <td><span class="textredtab">81.08</span></td>
+            <td>99.02</td>
+            <td>53.47</td>
+            <td>82.52</td>
+            <td><span class="textredtab">70.50</span></td>
+            <td>89.34</td>
+            <td>22.05M</td>
+        </tr>
+        <tr>
+            <td>+ G₃B</td>
+            <td><span class="textbluetab">79.78</span> (1.60% ↓)</td>
+            <td>98.70</td>
+            <td><span class="textredtab">54.11</span> (1.20% ↑)</td>
+            <td>81.02</td>
+            <td><span class="textbluetab">67.77</span> (3.87% ↓)</td>
+            <td>87.51</td>
+            <td>23.58M (6.94% ↑)</td>
+        </tr>
+        <tr style="border-bottom: 1px solid black">
+            <td>+ G₃U</td>
+            <td>79.52 (1.92% ↓)</td>
+            <td>98.85</td>
+            <td><span class="textbluetab">53.86</span> (0.73% ↑)</td>
+            <td>81.45</td>
+            <td>67.76 (3.89% ↓)</td>
+            <td>87.60</td>
+            <td>22.18M (0.56% ↑)</td>
+        </tr>
+        <tr>
+            <td>ViT-Tiny</td>
+            <td>72.76</td>
+            <td>98.14</td>
+            <td>43.53</td>
+            <td>75.00</td>
+            <td><span class="textredtab">59.15</span></td>
+            <td>82.07</td>
+            <td>5.53M</td>
+        </tr>
+        <tr>
+            <td>+ G₃B</td>
+            <td><span class="textredtab">76.69</span> (5.40% ↑)</td>
+            <td>98.57</td>
+            <td><span class="textbluetab">46.29</span> (6.34% ↑)</td>
+            <td>77.02</td>
+            <td><span class="textbluetab">59.11</span> (0.07% ↓)</td>
+            <td>82.01</td>
+            <td>6.29M (13.74% ↑)</td>
+        </tr>
+        <tr style="border-bottom: 2px solid black">
+            <td>+ G₃U</td>
+            <td><span class="textbluetab">75.56</span> (3.85% ↑)</td>
+            <td>98.48</td>
+            <td><span class="textredtab">46.75</span> (7.40% ↑)</td>
+            <td>76.81</td>
+            <td>57.97 (1.99% ↓)</td>
+            <td>81.03</td>
+            <td>5.59M (1.08% ↑)</td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<div class="content">
+  <h2>Low Rank Structure Analysis of Attention</h2>
+  <figure>
+    <img class="summary-img" src="./static/images/spectral_log.png" style="width:50%;">
+    <figcaption>Spectral decomposition of the attention matrix for ViT-Tiny on CIFAR-10 dataset with vanilla softmax attention and our learnable Fourier attention. We observe a sharp drop in the singular values signifying that Fourier KArAt preserves a lower rank structure in the attention compared to vanilla softmax attention.</figcaption>
+  </figure>
+</div>
+<div class="content">
+  <h2>Loss Landscapes</h2>
+  <figure>
+    <img class="summary-img" src="./static/images/KArAt_landscapes.svg" style="width:100%;">
+    <figcaption>Loss landscape for ViT-Tiny and ViT-Base (the smallest and the largest model) along the two largest principal component directions of the successive change of model parameters. The top row provides a 3D-visulaization of the loss surface including the local optima and saddle points. The bottom row shows the loss contours along with the trajectory of the optimizers. Clearly, the Fourier KArAt has substantially more local optima, leading to difficulties in optimization.</figcaption>
+  </figure>
+</div>
+<div class="content">
+  <h2>Attention Visualization</h2>
+  <figure>
+    <img class="summary-img" src="./static/images/KArAt_Attn.svg" style="width:100%;">
+    <figcaption>Visualizing attention maps for Vit-Tiny. The original images used for inference are on the left, and on the right, we show the attention score map and the image regions of the dominant head (Top row: Fourier KArAt, bottom row: Vanilla MHSA).</figcaption>
+  </figure>
+</div>
+<!-- <div class="content">
+  <h2>BibTex</h2>
+  <code> @article{ruiz2022dreambooth,<br>
+  &nbsp;&nbsp;title={DreamBooth: Fine Tuning Text-to-image Diffusion Models for Subject-Driven Generation},<br>
+  &nbsp;&nbsp;author={Ruiz, Nataniel and Li, Yuanzhen and Jampani, Varun and Pritch, Yael and Rubinstein, Michael and Aberman, Kfir},<br>
+  &nbsp;&nbsp;booktitle={arXiv preprint arxiv:2208.12242},<br>
+  &nbsp;&nbsp;year={2022}<br>
+  } </code> 
+</div> -->
+<div class="content" id="acknowledgements">
+  <p><font size="+1"><strong>Acknowledgements</strong>:</font>
+    We thank Dr. Srijan Das from the University of North Carolina at Charlotte for his valuable feedback and suggestions and for arranging the computational resources.
+    <!-- Recycling a familiar <a href="https://chail.github.io/latent-composition/">template</a> ;). --> 
+  </p>
+</div>
+<p style="text-align:center; font-family: Google Sans"> Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> CC BY-NC-SA 4.0</a> © Subhajit Maity | Last updated: 6 Mar 2025 | Template Credit: <a href="https://dreambooth.github.io/"> DreamBooth</a></p>
+</body>
+</html>
