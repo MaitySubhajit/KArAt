@@ -54,7 +54,7 @@ td:nth-child(1){text-align: left;}
   </span></p>
   <br>
   <img src="./static/images/KArAt_Arch_teaser.svg" class="teaser-gif" style="width:50%;"><br>
-  <h3 style="text-align:center"><em>A one-stop shop for any Kolmogorov-Arnold Activation for learning Transformer Attentions...</em></h3>
+  <h3 style="text-align:center"><em>A one-stop shop for any Kolmogorov-Arnold Activation for learning Transformer Attentions.</em></h3>
     <font size="+2">
           <p style="text-align: center;">
             <a href="https://arxiv.org/pdf/2503.10632" target="_blank">[<span><font size="+1"><i class="fas fa-file-pdf"></i></font></span>Paper]</a> &nbsp;&nbsp;&nbsp;&nbsp;
@@ -71,7 +71,7 @@ td:nth-child(1){text-align: left;}
 </div>
 <div class="content">
   <h2>Background</h2>
-  <p>In search for an answer, we realized that while DeiT+KAN and ViT+KAN replace the MLP layer with KAN in the Transformer's encoder block, KAT implements a sophisticated group-KAN strategy that reuses a learnable function among a group of units in the same layer and chooses different bases for different encoder blocks. This strategy helps improve the accuracy by keeping almost similar parameter counts. Therefore, simply replacing MLPs with KANs might not guarantee better generalizability, but a properly designed KAN could. This perspective on the KANs' performance in conjunction with Transformers opens many research questions. Importantly, we also note that the community remains put from designing a learnable multihead attention module, the heart of the Transformers. Therefore, in the rise of second-generation Transformers, such as Google's TITAN and SAKANA AI's Transformer<sup>2</sup> that mimic the human brain, we want to ask: <em>Is it worth deploying learnable multi-head self-attention to the (vision) Transformers?</em></p>
+  <p><a href="https://openreview.net/forum?id=Ozo7qJ5vZi" target="_blank">KANs</a> were integrated with neural network architectures, the primary of them being conventional MLPs or convolution neural networks (CNNs). But KAN's exploration of more advanced architectures such as <a href="https://openreview.net/forum?id=YicbFdNTTy" target="_blank">Transformers</a>, remains limited. <a href="https://github.com/chenziwenhaoshuai/Vision-KAN" target="_blank">VisionKAN</a> replace the MLP layers inside the encoder blocks of <a hred="https://proceedings.mlr.press/v139/touvron21a.html" target="_blank">data-efficient image Transformers (DeiTs)</a> with KANs and proposed DeiT+KAN, <a href="https://openreview.net/forum?id=BCeock53nt" target="_blank">Yang & Wang</a> proposed two variants; ViT+KAN that replaces the MLP layers inside ViT's encoder blocks, and <a href="https://openreview.net/forum?id=BCeock53nt" target="_blank">Kolmogorov-Arnold Transformer (KAT)</a>, albeit similar to ViT+KAN but with a refined group-KAN strategy. From these works, we realized simply replacing MLPs with KANs might not guarantee better generalizability, but a properly designed KAN could. We note that while DeiT+KAN and ViT+KAN replace the MLP layer with KAN in the Transformer's encoder block, KAT implements a sophisticated group-KAN strategy that reuses a learnable function among a group of units in the same layer and chooses different bases for different encoder blocks. Importantly, we also note that the community remains put from designing a learnable multihead attention module, the heart of the Transformers. Therefore, in the rise of second-generation Transformers, such as <a href="https://about.google" target="_blank">Google</a>’s <a href="https://arxiv.org/abs/2501.00663" target="_blank">TITAN</a> and <a href="https://sakana.ai/" target="_blank">SAKANA AI</a>’s <a href="https://arxiv.org/abs/2501.06252" target="_blank">Transformer<sup>2</sup></a> that mimic the human brain, we want to ask: <em>Is it worth deploying learnable multi-head self-attention to the (vision) Transformers?</em></p>
   <br>
   <!-- <img class="summary-img" src="./static/background.png" style="width:100%;"> <br> -->
 </div>
@@ -79,10 +79,10 @@ td:nth-child(1){text-align: left;}
   <h2>Design</h2>
   <p>Let \(\mathcal{A}^{i,j}\in \mathbb{R}^{N\times N}\) be the attention matrix for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. For \(k\in[N]\), the softmax activation function, \(\sigma:\mathbb{R}^N\to (0,1)^N\), operates on the \(k^{\rm th}\) row vector, \(\mathcal{A}^{i,j}_{k,:}\in\mathbb{R}^{1\times N}\) of \(\mathcal{A}^{i,j}\) to produce component-wise output 
     \(
-    \sigma(\mathcal{A}^{i,j}_{k,l})=\tfrac{e^{\mathcal{A}^{i,j}_{k,l}}}{\sum\limits_{n=1}^N e^{\mathcal{A}^{i,j}_{k,n}}}.
-    \)
+    \sigma(\mathcal{A}^{i,j}_{k,l})=\tfrac{e^{\mathcal{A}^{i,j}_{k,l}}}{\sum\limits_{n=1}^N e^{\mathcal{A}^{i,j}_{k,n}}}
+    \).
   <br>
-  Instead of using the softmax function,  we can use a learnable activation function, \({\tilde{\sigma}}\) on the row vectors of each attention head \(\mathcal{A}^{i,j}\). With any choice of the basis functions (e.g., B-Spline, Fourier, Fractals, Wavelets, etc.), the activated attention row vector, \({\tilde{\sigma}(\mathcal{A}^{i,j}_{k,:})}\) for \(k\in [N]\) can be written as \(\tilde{\sigma}\left[(\mathcal{A}^{i,j}_{k,:})\right) = \left(\Phi^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right)^\top\)
+  Instead of using the softmax function,  we can use a learnable activation function, \({\tilde{\sigma}}\) on the row vectors of each attention head \(\mathcal{A}^{i,j}\). With any choice of the basis functions (e.g., B-Spline, Fourier, Fractals, Wavelets, etc.), the activated attention row vector, \({\tilde{\sigma}(\mathcal{A}^{i,j}_{k,:})}\) for \(k\in [N]\) can be written as \(\tilde{\sigma}\left[(\mathcal{A}^{i,j}_{k,:})\right) = \left(\Phi^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right)^\top\).
   </p>
   <!-- <br> -->
   <figure>
@@ -91,7 +91,7 @@ td:nth-child(1){text-align: left;}
   </figure>
   <!-- <p><em>(a)</em> The standard softmax self-attention for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. <em>(b)</em> The Kolmogorov-Arnold Attention (KArAt) replaces the softmax with a learnable function \(\Phi^{i,j}\). <em>(c)</em> The ideal KArAt is with an operator matrix, \(\Phi^{i,j}\) with \(N \times N\) learnable units that act on each row of \(\mathcal{A}^{i,j}\). <em>(d)</em> While \(\Phi^{i,j}\in\mathbb{R}^{N\times N}\) is impossible to implement due to computational constraints, our architecture uses an operator \(\widehat{\Phi}^{i,j}\) with \(N \times r\) learnable units \(r\ll N\), followed by a linear projector with learnable weights \(W\in \mathbb{R}^{r \times N}\).</p> -->
   <!-- <br> -->
-  <p>Instead of using an \(N\times N\) operator, \({\Phi^{i,j}}\), we use a reduced sized operator \({\widehat{\Phi}^{i,j}\in\mathbb{R}^{r\times N}}\) such that \({r\ll N}\), and the new learned activation is $r$-dimensional for \(k\in[N]\). That is, \({\widehat{\Phi}^{i,j}}\) down-projects each attention row vector of \(\mathcal{A}^{i,j}\) to a lower dimensional subspace. This process significantly reduces the computational overhead. Next, we post-multiply using another learnable weight matrix, \(W^{i,j}\in\mathbb{R}^{N\times r}\) to project them back to their original dimension. For each \(k\in[N]\), this operation results in computing \({\widehat{\sigma}(\mathcal{A}^{i,j}_{k,:}) =\left[W^{i,j}\widehat{\Phi}^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right]^{\top}}\)</p>
+  <p>Instead of using an \(N\times N\) operator, \({\Phi^{i,j}}\), we use a reduced sized operator \({\widehat{\Phi}^{i,j}\in\mathbb{R}^{r\times N}}\) such that \({r\ll N}\), and the new learned activation is \(r\)-dimensional for \(k\in[N]\). That is, \({\widehat{\Phi}^{i,j}}\) down-projects each attention row vector of \(\mathcal{A}^{i,j}\) to a lower dimensional subspace. This process significantly reduces the computational overhead. Next, we post-multiply using another learnable weight matrix, \(W^{i,j}\in\mathbb{R}^{N\times r}\) to project them back to their original dimension. For each \(k\in[N]\), this operation results in computing \({\widehat{\sigma}(\mathcal{A}^{i,j}_{k,:}) =\left[W^{i,j}\widehat{\Phi}^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right]^{\top}}\).</p>
   <figure>
   <img class="summary-img" src="./static/images/KArAt_uniblock.svg" style="width:50%;">
   <figcaption><em>(a)</em> Blockwise attention mode where \(\Phi^{i,1}\neq\Phi^{i,2}\neq\cdots\neq\Phi^{i,L}\) for all \(i=1,2,...,h\) <em>(b)</em> universal attention mode, \(\Phi^{i,1}=\Phi^{i,2}=\cdots=\Phi^{i,L}=\Phi^{i}\) for all \(i=1,2,...,h\).</figcaption>
@@ -224,22 +224,37 @@ td:nth-child(1){text-align: left;}
   <h2>Low Rank Structure Analysis of Attention</h2>
   <figure>
     <img class="summary-img" src="./static/images/spectral_log.png" style="width:50%;">
-    <figcaption>Spectral decomposition of the attention matrix for ViT-Tiny on CIFAR-10 dataset with vanilla softmax attention and our learnable Fourier attention. We observe a sharp drop in the singular values signifying that Fourier KArAt preserves a lower rank structure in the attention compared to vanilla softmax attention.</figcaption>
+    <figcaption>Spectral decomposition of the attention matrix for ViT-Tiny on CIFAR-10 dataset with vanilla softmax attention and learnable Fourier KArAt.</figcaption>
   </figure>
+  <p>
+    Primarily, it is delineated by existing literature that the attention matrices in the vision transformers are usually sparse and low rank. We empirically verify this claim, and we note that the attention matrix has a low rank structure before and after softmax operation. We also note that the number of significant singular values increases slightly after the softmax operation in attention (shown in the paper). Here, from the above figure, we observe a sharp drop in the singular values, signifying that <em>Fourier KArAt preserves a lower rank structure in the attention matrix compared to vanilla softmax attention</em>.
+  </p>
 </div>
 <div class="content">
   <h2>Loss Landscapes</h2>
   <figure>
     <img class="summary-img" src="./static/images/KArAt_landscapes.svg" style="width:100%;">
-    <figcaption>Loss landscape for ViT-Tiny and ViT-Base (the smallest and the largest model) along the two largest principal component directions of the successive change of model parameters. The top row provides a 3D-visulaization of the loss surface including the local optima and saddle points. The bottom row shows the loss contours along with the trajectory of the optimizers. Clearly, the Fourier KArAt has substantially more local optima, leading to difficulties in optimization.</figcaption>
+    <figcaption>Loss landscape for ViT-Tiny and ViT-Base (the smallest and the largest model) along the two largest principal component directions of the successive change of model parameters. The top row provides a 3D-visulaization of the loss surface including the local optima and saddle points. The bottom row shows the loss contours along with the trajectory of the optimizers.</figcaption>
   </figure>
+  <p>
+    <!-- Clearly, the Fourier KArAt has substantially more local optima, leading to difficulties in optimization. -->
+     From the above figure, the following observations can be made: <br>
+     <ul>
+      <li>More parameters lead to complex loss landscapes. This is true even when moving to vanilla ViT-Base from vanilla ViT-Tiny. There are slightly more local optima in the loss landscape of ViT-Base compared to that of ViT-Tiny.</li><br>
+      <li>Fourier KArAt has significantly more complex loss landscape with lots of local optima and saddle points which hinders the network optimization.</li><br>
+      <li>From the optimization path taken by the gradients, it is evident that the model can find a decent minimum even with all the local optima. Thus, finding out a way to navigate this spikey loss landscape would improve the optimization and performance.</li>
+     </ul>
+  </p>
 </div>
 <div class="content">
   <h2>Attention Visualization</h2>
   <figure>
     <img class="summary-img" src="./static/images/KArAt_Attn.svg" style="width:100%;">
-    <figcaption>Visualizing attention maps for Vit-Tiny. The original images used for inference are on the left, and on the right, we show the attention score map and the image regions of the dominant head (Top row: Fourier KArAt, bottom row: Vanilla MHSA).</figcaption>
+    <figcaption>Visualizing attention maps for Vit-Tiny. The original images used for inference are on the left, and on the right, we show the attention score map and the image regions of the dominant head (Top row: Fourier KArAt, bottom row: Vanilla softmax attention).</figcaption>
   </figure>
+  <p>
+    From the above figure, it can be observed that the vanilla softmax attention focuses on sparse feature interactions, while the Fourier KArAt captures dominant feature interactions. As Fourier KArAt is not restricted to take values in \([0, 1]\) unlike vanilla softmax attention, it has the flexibility to capture the negative interactions.
+  </p>
 </div>
 <div class="content">
   <h2>BibTex</h2>
@@ -256,6 +271,6 @@ td:nth-child(1){text-align: left;}
     <!-- Recycling a familiar <a href="https://chail.github.io/latent-composition/">template</a> ;). --> 
   </p>
 </div>
-<p style="text-align:center; font-family: Google Sans"> Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> CC BY-NC-SA 4.0</a> © Subhajit Maity | Last updated: 6 Mar 2025 | Template Credit: <a href="https://dreambooth.github.io/"> DreamBooth</a></p>
+<p style="text-align:center; font-family: Google Sans"> Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> CC BY-NC-SA 4.0</a> © Subhajit Maity | Last updated: 14 Mar 2025 | Template Credit: <a href="https://dreambooth.github.io/"> DreamBooth</a></p>
 </body>
 </html>
