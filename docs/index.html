@@ -64,7 +64,7 @@ td:nth-child(1){text-align: left;}
   <span><sup>2</sup><a href="https://sciences.ucf.edu/math" target="_blank">Department of Mathematics</a>, <a href="https://www.ucf.edu" target="_blank">University of Central Florida</a>
   </span></p>
   <br>
-  <img src="./static/images/KArAt_Arch_teaser.svg" class="teaser-gif" style="width:50%;"><br>
+  <img src="./static/images/KArAt_Arch_teaserV2.svg" class="teaser-gif" style="width:50%;"><br>
   <h3 style="text-align:center"><em>A one-stop shop for any Kolmogorov-Arnold Activation for learning Transformer Attentions.</em></h3>
     <font size="+2">
           <p style="text-align: center;">
@@ -97,13 +97,13 @@ td:nth-child(1){text-align: left;}
   </p>
   <!-- <br> -->
   <figure>
-  <img class="summary-img" src="./static/images/KArAt_Arch.svg" style="width:60%;">
+  <img class="summary-img" src="./static/images/KArAt_ArchV2.svg" style="width:60%;">
   <figcaption><em>(i)</em> The traditional softmax self-attention for \(i^{\rm th}\) head in the \(j^{\rm th}\) encoder block. <em>(ii)</em> The Kolmogorov-Arnold Attention (KArAt) replaces the softmax with a learnable operator \(\Phi^{i,j}\). <em>(iii)</em> The regular KArAt uses an operator matrix, \(\Phi^{i,j}\) with \(N^2\) learnable units acting on each row of \(\mathcal{A}^{i,j}\) and is prohibitively expensive. <em>(iv)</em> While \(\Phi^{i,j}\) of size \(N\times N\) is impossible to implement due to computational constraints, Modular KArAt uses an operator \(\widehat{\Phi}^{i,j}\) with \(N \times r\) learnable units \(r\ll N\), followed by a linear projector with learnable weights \(W\in \mathbb{R}^{r \times N}\).</figcaption>
   </figure>
   <h3>Our Architecture</h3>
   <p>Instead of using an \(N\times N\) operator, \({\Phi^{i,j}}\), we use a reduced sized operator \({\widehat{\Phi}^{i,j}}\) of \(r\times N\), such that \({r\ll N}\), and the new learned activation is \(r\)-dimensional for \(k\in[N]\). That is, \({\widehat{\Phi}^{i,j}}\) down-projects each attention row vector of \(\mathcal{A}^{i,j}\) to a lower dimensional subspace. This process significantly reduces the computational overhead. Next, we post-multiply using another learnable weight matrix, \(W^{i,j}\in\mathbb{R}^{N\times r}\) to project them back to their original dimension. For each \(k\in[N]\), this operation results in computing \({\widehat{\sigma}(\mathcal{A}^{i,j}_{k,:}) =\left[W^{i,j}\widehat{\Phi}^{i,j}\left[(\mathcal{A}^{i,j}_{k,:})^\top\right]\right]^{\top}}\).</p>
   <figure>
-  <img class="summary-img" src="./static/images/KArAt_uniblock.svg" style="width:100%;">
+  <img class="summary-img" src="./static/images/KArAt_uniblockV2.svg" style="width:100%;">
   <figcaption><em>(a)</em> Blockwise attention mode where \(\Phi^{i,1}\neq\Phi^{i,2}\neq\cdots\neq\Phi^{i,L}\) for all \(i=1,2,...,h\) <em>(b)</em> universal attention mode, \(\Phi^{i,1}=\Phi^{i,2}=\cdots=\Phi^{i,L}=\Phi^{i}\) for all \(i=1,2,...,h\).</figcaption>
   </figure>
   <p>We consider two configurations for updating the operator \(\widehat{\Phi}^{i,j}\).  <em>(a)</em> <span style="font-weight: bold;">Blockwise:</span> In this configuration, each encoder block involves learning the attention through \(h\) distinct operators \(\widehat{\Phi}\) for each of the \(h\) heads, totaling \(hL\) operators. Like the MHSA architecture in ViTs, the blockwise configuration is designed to learn as many different data representations as possible. <em>(b)</em> <span style="font-weight: bold;">Universal:</span> The motivation behind this configuration comes from the KAT. In KAT, the MLP head is replaced with different variations of a KAN head &mdash; and Group-KAN. In Group-KAN, the KAN layer shares rational base functions and their coefficients among the edges.
@@ -636,7 +636,7 @@ td:nth-child(1){text-align: left;}
 <div class="content">
   <h2>Loss Landscapes</h2>
   <figure>
-    <img class="summary-img" src="./static/images/KArAt_landscapes.svg" style="width:100%;">
+    <img class="summary-img" src="./static/images/KArAt_landscapesV2.svg" style="width:100%;">
     <figcaption>3D-visualization of Loss landscape for ViT-Tiny and ViT-Base along the two largest principal component directions of the successive change of model parameters. KArAt’s loss landscapes are significantly less smooth than traditional attention; spiky loss landscapes are undesirable in terms of optimization stability and generalizability of the resulting model.</figcaption>
   </figure>
   <p>
@@ -660,7 +660,7 @@ td:nth-child(1){text-align: left;}
     From the above figure, it can be observed that the vanilla softmax attention focuses on sparse feature interactions, while the Fourier KArAt captures dominant feature interactions. As Fourier KArAt is not restricted to take values in \([0, 1]\) unlike vanilla softmax attention, it has the flexibility to capture the negative interactions.
   </p>
   <figure>
-    <img class="summary-img" src="./static/images/KArAt_Attn2.svg" style="width:100%;">
+    <img class="summary-img" src="./static/images/KArAt_Attn_Heads.svg" style="width:100%;">
     <figcaption><span style="font-weight: bold;">Vit-Tiny attention map characterization.</span> Original image for inference (the center), the attention maps (top row), and contributing image regions (bottom row) for all three heads in ViT-Tiny: traditional MHSA (left) and Fourier KArAt G3B (right). The traditional MHSA sporadically focuses on fine-grained features of the primary object in the image. In contrast, the learnable attention in Fourier KArAt identifies the primary object features present significantly across all heads.</figcaption>
   </figure>
 </div>
