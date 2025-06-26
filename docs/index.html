@@ -167,7 +167,7 @@ td:nth-child(1){text-align: left;}
 	  </tbody>
   </table>
   <p>
-    By design, KArAt can utilize any basis function for activating the attention units. Therefore, in addition to the Fourier basis, we embed 5 different wavelet bases, and the Rational Function basis into KArAt. The function representations for these choices of bases are outlined in the above table. Along with these Bases we also can choose base activation \(b(x)\) from Zero, SiLU, and Identity. However, empirically, we found that Zero base activation (\(b(x)=0\)) with Fourier basis outperforms the rest of the combinations. For more details, see the paper.
+    By design, KArAt can utilize any basis function for activating the attention units. Therefore, in addition to the Fourier basis, we embed 5 different wavelet bases, and the Rational Function basis into KArAt. The function representations for these choices of bases are outlined in the above table. Along with these Bases we also can choose base activation \(b(x)\) from Zero, SiLU, and Identity. Following this the general expression of our Fourier KArAt can be given as \(\widehat{\phi}^{i,j}_{pq}(\mathcal{A}^{i,j}_{k,q})= b(\mathcal{A}^{i,j}_{k,q}) + \sum_{m=1}^{G}a_{pqm}\cos{(m\mathcal{A}^{i,j}_{k,q})}+b_{pqm}\sin{(m\mathcal{A}^{i,j}_{k,q})}\). However, empirically, we found that Zero base activation (\(b(x)=0\)) with Fourier basis outperforms the rest of the combinations. For more details, see the paper.
   </p>
 </div>
 <div class="content">
@@ -509,8 +509,19 @@ td:nth-child(1){text-align: left;}
   </figure>
 </div>
 <div class="content">
-  <h2>Empirical Findings</h2>
-  <h3>Compute Requirements</h3>
+  <h2>Key Takeways from Empirical Data</h2>
+  <p>
+    <ul>
+      <li>The Top-1 accuracies show Blockwise configuration is more desirable over Universal for image classification.</li>
+      <li>We can also infer that the Fourier KArAt transfers well in fine-tuning tasks. However, the transferability of hyperparameters, <em>e.g.</em>, grid size \(G\), across datasets remains an open question.</li>
+      <li>KArAt generalizes well. For random initialization in detection, the vanilla ViT-Det has an advantage over KArAt, and thus, we see a small performance gap. The best KArAt hyperparameters for this task are yet to be found.</li>
+    </ul>
+    Overall, KArAt shows significant potential if the incompatibilities are properly addressed.
+  </p>
+</div>
+<div class="content">
+  <!-- <h2>Empirical Findings</h2> -->
+  <h2>Compute Requirements</h2>
   <figure>
     <img class="summary-img" src="./static/images/KArAt_compute.svg" style="width:100%;">
     <figcaption>A detailed comparison of computing requirements.We compare the training times for 100 epochs with the hyperparameter settings given in Table 5 for all the datasets CIFAR-10, CIFAR- 100, and ImageNet-1K. We also compare the throughputs of different models on ImageNet-1K; the throughput results will be similar for other datasets as the input size is 224 × 224.</figcaption>
@@ -613,7 +624,7 @@ td:nth-child(1){text-align: left;}
         </tr>
     </tbody>
   </table>
-  <h3>Key Takeaways</h3>
+  <!-- <h3>Key Takeaways</h3>
   <p>
     <ul>
       <li>The Top-1 accuracies show Blockwise configuration is more desirable over Universal for image classification.</li>
@@ -621,7 +632,7 @@ td:nth-child(1){text-align: left;}
       <li>KArAt generalizes well. For random initialization in detection, the vanilla ViT-Det has an advantage over KArAt, and thus, we see a small performance gap. The best KArAt hyperparameters for this task are yet to be found.</li>
     </ul>
     Overall, KArAt shows significant potential if the incompatibilities are properly addressed.
-  </p>
+  </p> -->
 </div>
 <div class="content">
   <h2>Low Rank Structure Analysis of Attention</h2>
@@ -679,6 +690,6 @@ td:nth-child(1){text-align: left;}
     <!-- Recycling a familiar <a href="https://chail.github.io/latent-composition/">template</a> ;). --> 
   </p>
 </div>
-<p style="text-align:center; font-family: Google Sans"> Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> CC BY-NC-SA 4.0</a> © Subhajit Maity | Last updated: 25 Jun 2025 | Template Credit: <a href="https://dreambooth.github.io/"> DreamBooth</a></p>
+<p style="text-align:center; font-family: Google Sans"> Copyright: <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> CC BY-NC-SA 4.0</a> © Subhajit Maity | Last updated: 26 Jun 2025 | Template Credit: <a href="https://dreambooth.github.io/"> DreamBooth</a></p>
 </body>
 </html>
