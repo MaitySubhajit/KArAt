@@ -37,7 +37,7 @@ This is the official implementation of the paper [Kolmogorov-Arnold Attention: I
 :pushpin: [Citation](#bibtex)
 
 ### :wrench: Framework
-<div align="center"><center><img src="./docs/static/images/KArAt_Arch_readme.jpg" width="100%"></center></div>
+<div align="center"><center><img src="./docs/static/images/KArAt_Arch_readme.jpg" width="75%"></center></div>
 
 ### :bar_chart: Quantitative Performance
 |         Model          |        CIFAR-10       |       CIFAR-100       |      ImageNet-1K      |
@@ -69,6 +69,12 @@ This is the official implementation of the paper [Kolmogorov-Arnold Attention: I
 :white_check_mark: [Environment](#environment)
 
 :white_check_mark: [Training](#Training)
+
+:white_check_mark: [Multi-GPU Training](#multi-gpu-training)
+
+:white_check_mark: [Evaluation](#evaluation)
+
+:white_check_mark: [Finetuning](#finetuning)
 
 ### Dataset   
 - This implementation includes provisioning for six datasets: [CIFAR-10](https://www.cs.toronto.edu/~kriz/cifar.html), [CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html), [ImageNet-1K](https://image-net.org/index.php), [SVHN](http://ufldl.stanford.edu/housenumbers), [Flowers 102](https://www.robots.ox.ac.uk/~vgg/data/flowers/102), and [STL-10](https://cs.stanford.edu/~acoates/stl10). Use the below arguments for using each of these datasets.
