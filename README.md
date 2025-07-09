@@ -19,7 +19,7 @@
 </div>
 
 # Kolmogorov-Arnold Attention: Is Learnable Attention Better for Vision Transformers? :fire:
-This is the official implementation of the paper [Kolmogorov-Arnold Attention: Is Learnable Attention Better for Vision Transformers?](https://arxiv.org/abs/2503.10632) by [S. Maity](https://subhajitmaity.io), [K. Hitsman](https://github.com/KillianHitsman), [X. Li](https://sciences.ucf.edu/math/person/xin-li), [A. Dutta](https://sciences.ucf.edu/math/person/aritra-dutta).
+This is the official implementation of the paper [Kolmogorov-Arnold Attention: Is Learnable Attention Better for Vision Transformers?](https://arxiv.org/abs/2503.10632) by [S. Maity](https://subhajitmaity.me), [K. Hitsman](https://github.com/KillianHitsman), [X. Li](https://sciences.ucf.edu/math/person/xin-li), [A. Dutta](https://sciences.ucf.edu/math/person/aritra-dutta).
 
 ### :loudspeaker: Recent Updates
 - *8 Jul 2025* : Initial code is now available. If you face any problem, please read the [FAQ & Issues](#mag-faqs-notes-issues) section and raise an issue if necessary.
